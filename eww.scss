@@ -1,0 +1,318 @@
+// There is a lot of repitition here, but it works for my setup and I never had
+// time to fix it all. If you use any part of this it will likely need pixel
+// adjustments for larger screens.
+
+*{
+  all: unset;
+}
+
+.bg-wdg {
+  background-color: rgb(0,0,0,0);
+}
+
+.bg-bdr {
+  border: 3px solid #282828;
+  border-radius: 10px;
+  padding: 4px 8px 4px 8px;
+}
+
+/* User ***********************************************************************/
+.user-info {
+  font-family: Caskaydia Cove Nerd Font;
+  color: #282828;
+  padding: 16px;
+}
+
+.user-image {}
+
+.user-name {
+  font-size: 30pt;
+}
+
+.user-up {
+  font-size: 14pt;
+}
+
+
+/* Clock *********************************************************************/
+.clk-time {
+  font-size: 63pt;
+  color: #282828;
+}
+
+.clk-date {
+  font-size: 14pt;
+  color: #282828;
+}
+
+
+/* System ********************************************************************/
+.sys-box {
+  padding: 16px 8px;
+}
+
+.sys-bg {
+  border-radius: 100%;
+  background-color: #282828;
+}
+
+.sys-fg {
+  border-radius: 100%;
+  background-color: #e2ce99;
+}
+
+.sys-icon {
+  padding: 20px;
+}
+
+.bat-prog {
+  color: #79740e;
+}
+
+.mem-prog {
+  color: #8f3f71;
+}
+
+.cpu-prog {
+  color: #076678;
+}
+
+.hdd-prog {
+  color: #bd0016;
+}
+
+/* Sliders ********************************************************************/
+.slider-cont {
+  background-color: #e2ce99;
+}
+
+.slider trough {
+  min-height: 16px;
+  min-width: 176px;
+  border-radius: 16px;
+  background: #282828;
+}
+
+.slider highlight {
+  border-radius: 16px;
+}
+
+.vol-slider highlight {
+  background-color: #79740e;
+}
+
+.vol-slider:hover highlight {
+  background-color: #e5a614;
+}
+
+.mic-slider highlight {
+  background-color: #8f3f71;
+}
+
+.mic-slider:hover highlight {
+  background-color: #e5a614;
+}
+
+.bright-slider highlight {
+  background-color: #076678;
+}
+
+.bright-slider:hover highlight {
+  background-color: #e5a614;
+}
+
+.control-button {
+  background-color: #282828;
+  border-radius: 12px;
+  padding: 4px;
+  border: 2px solid #282828;
+}
+
+.control-button:hover {
+  background-color: #076678;
+  border-radius: 12px;
+  border: 2px solid #076678;
+}
+
+.control-box {
+  background-color: #e2ce99;
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+
+/* Power Menu ****************************************************************/
+.power-button {
+  padding: 4px;
+  background-color: #076678;
+  border-radius: 12px;
+  border: 2px solid #282828;
+}
+
+.power-button:hover {
+  background-color: #e5a614;
+}
+
+/* Bookmarks *****************************************************************/
+.book-revealer {
+  padding: 6;
+  background-color: #8f3f71;
+  border: 2px solid #282828;
+  border-radius: 12px;
+}
+
+.book-revealer:hover {
+  background-color: #e5a614;
+}
+
+.book-tray {
+  background-color: #282828;
+  border-radius: 12px;
+}
+
+.firefox-button {
+  padding: 8px;
+  background-color: #282828;
+  border-radius: 12px;
+}
+
+.firefox-button:hover {
+  background-color: #e5a614;
+}
+
+/* Control Center ************************************************************/
+.dash-bg {
+  background-color: #754A21;  //C27A36; //c7ab76;
+  //border: 2px solid #e2ce99;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.dash-cnt {
+  background-color: #e2ce99;
+  padding: 4px;
+  border-radius: 12px;
+}
+
+/* Dropdowns *****************************************************************/
+.wifi-bg {
+  //background-color: #754A21;
+  background-color: rgb(0,0,0,0);
+  border: 16px solid #754a21;
+  border-radius: 12px;
+}
+
+.wifi-status-bg {
+  background-color: #754a21;
+  min-height: 69px;
+}
+
+.wifi-status {
+  background-color: #e2ce99;
+  border-radius: 12px;
+  padding: 0px 12px;
+}
+
+.wifi-name {
+  font-family: Caskaydia Cove Nerd Font;
+  font-size: 20pt;
+  color: #282828;
+}
+
+/* Dropdown Status For Terminal ***********************************************/
+
+.dropdown-box {
+  background-color: rgb(0,0,0,0);
+}
+
+.dd-status-box {
+  background-color: rgb(0,0,0,0);
+}
+
+.dd-status-bg {
+  background-color: #754a21;
+  min-width: 240px;
+  min-height: 345px;
+  padding: 16px;
+}
+
+.dd-system-status {
+  background-color: #e2ce99;
+  border-radius: 8px;
+}
+
+.dd-center-status {}
+
+.dd-center-fill {
+  background-color: #754a21;
+  min-width: 822px;
+  min-height: 16px;
+}
+
+.dd-right-status {
+  background-color: #e2ce99;
+  border-radius: 8px;
+}
+
+.dd-status-bar-bg {
+  background-color: #754a21;
+  padding: 0px 0px 16px 0px;
+
+}
+
+.dd-status-bar {
+  background-color: #e2ce99;
+  border-radius: 8px;
+  min-height: 40px;
+  padding: 0px 16px;
+}
+
+.text {
+  font-family: Caskaydia Cove Nerd Font;
+  color: #282828;
+}
+
+.dd-time {
+  font-size: 28pt;
+  padding: 3px 16px;
+  background-color: #07999a;
+  //border: 2 solid #282828;
+  border-radius: 8px;
+  color: #282828;
+}
+
+.dd-date {
+  font-size: 16pt;
+}
+
+.dd-wifi-name {
+  font-size: 14pt;
+}
+
+.dd-text-container {
+  background-color: #e2ce99;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.dd-bg {
+  background-color: #e2ce99;
+  border-radius: 8px;
+  min-height: 20px;
+}
+
+.ws-icon {
+  padding: 6px 0px;
+  margin: 6px 0px;
+  border-radius: 100%;
+}
+
+.ws-icon:hover {
+  background-color: #076678;
+}
+
+.ws-notify-bg {
+  background-color: #e2ce99;
+  padding: 0px 12px;
+  border: 4px solid #754a21;
+  border-radius: 12px;
+}

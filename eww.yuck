@@ -1,0 +1,311 @@
+;; "A Nice Bowl of Ramen" eww widgets by stevendkom
+;;
+;; PLEASE NOTE: these are setup for a 1366x768 screen so they will not look
+;; right on any other screen size without many adjustments to positioning and
+;; css. Also, the icons and images referenced here are not included. See the
+;; README for links if you want something similar. You will have to parse through
+;; this and find all the referenced images and icons.
+;;
+;; There may also be dependencies that are called in here or the scripts, so
+;; if you do choose to copy any of this make sure you have the right programs
+;; installed. Some features may be highly coupled to my qtile config and my own
+;; personal workflow.
+;;
+;; This is provided as more of a guide to help people see what they might do
+;; to create similar widgets. I cannot say that it will all work as expected
+;; on other setups. Please refer to the documentation and tutorials available
+;; online for more indepth information and trouble shooting.
+
+;; Variables ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; User vars
+(defpoll USER_NAME :interval "30s" `whoami`)
+(defpoll USER_UP :interval "30s"
+  `uptime -p | sed 's/up //' | sed 's/minutes/mins/' | sed 's/hours/hrs/'`)
+
+;; Time vars
+(defpoll HOUR :interval "30s" `date +\"%I\"`)
+(defpoll MIN :interval "30s" `date +\"%M\"`)
+(defpoll MER :interval "30s" `date +\"%p\"`)
+(defpoll DAY :interval "300s" `date +\"%A\"`)
+(defpoll MONTH :interval "300s" `date +\"%B\"`)
+(defpoll DAY_NUM :interval "300s" `date +\"%d\"`)
+
+;; Control vars
+(defpoll VOL_AMT :interval "1s" "scripts/volume.sh --vol")
+(defpoll VOL_ICON :interval "1s" "scripts/volume.sh --vol-icon")
+(defpoll MIC_AMT :interval "1s" "scripts/volume.sh --mic")
+(defpoll MIC_ICON :interval "1s" "scripts/volume.sh --mic-icon")
+(defpoll BRIGHT_AMT :interval "5s" "xbacklight -get")
+
+;; Dropdown vars
+(defpoll WIFI
+  :interval "5s"
+  `nmcli connection show --active | awk '{print $1}' | tail --lines=1`)
+(defvar WS_CURRENT "a")
+
+
+;; Widgets ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; User
+(defwidget user-wg []
+  (box :class "bg-wdg" :orientation "h" :space-evenly false
+      (image :class "user-image" :path "images/strinsberg.png")
+    (box :class "user-info" :orientation "v" :hexpand true
+      (label :class "user-name" :text USER_NAME :xalign 0.5)
+      (label :class "user-up" :text USER_UP :xalign 0.5))))
+
+;; clock
+(defwidget clock-wg [] 
+  (box :class "bg-wdg" :orientation "v" :space-evenly false
+		(label :class "clk-time" :text "${HOUR}:${MIN} ${MER}" :xalign 0.5)
+		(label :class "clk-date" :text "${DAY}, ${MONTH} ${DAY_NUM}" :xalign 0.5)))
+
+
+;;;;; System ;;;;;
+
+;; battery
+(defwidget battery-wg []
+  (box :class "sys-box" :space-evenly false
+    (box :class "bg-wdg sys-bg" :orientation "v" :space-evenly false
+      (circular-progress :class "bat-prog" :value {EWW_BATTERY["BAT0"].capacity}
+                         :thickness 10 :clockwise true :start-at 25
+        (image :class "sys-icon sys-fg"
+               :path "${EWW_BATTERY["BAT0"].status == "Charging"
+                        ? 'images/icons/charging.png'
+                        : EWW_BATTERY["BAT0"].capacity > 50
+                          ? "images/icons/full-battery.png"
+                          : EWW_BATTERY["BAT0"].capacity > 10
+                            ? "images/icons/half-battery.png"
+                            : "images/icons/low-battery.png"}")))))
+
+;; ram
+(defwidget memory-wg []
+  (box :class "sys-box" :space-evenly false
+    (box :class "bg-wdg sys-bg" :orientation "v" :space-evenly false
+      (circular-progress :class "mem-prog" :value {EWW_RAM.used_mem_perc}
+                         :thickness 10 :clockwise true :start-at 25
+        (image :class "sys-icon sys-fg"
+               :path "images/icons/ram.png")))))
+
+;; cpu
+(defwidget cpu-wg []
+  (box :class "sys-box" :space-evenly false
+    (box :class "bg-wdg sys-bg" :orientation "v" :space-evenly false
+      (circular-progress :class "cpu-prog" :value {EWW_CPU.avg}
+                         :thickness 10 :clockwise true :start-at 25
+        (image :class "sys-icon sys-fg"
+               :path "images/icons/cpu.png")))))
+
+;; disk
+(defwidget hdd-wg []
+  (box :class "sys-box" :space-evenly false
+    (box :class "bg-wdg sys-bg" :orientation "v" :space-evenly false
+      (circular-progress :class "hdd-prog" :value {EWW_DISK["/"].used_perc}
+                         :thickness 10 :clockwise true :start-at 25
+        (image :class "sys-icon sys-fg"
+               :path "images/icons/hdd.png")))))
+
+
+;;;;; Control ;;;;;
+
+;; Volume
+(defwidget volume-wg []
+  (box :class "bg-wdg" :orientation "h" :space-evenly false :spacing 4
+    (button :class "bg-wdg control-button"
+      :onclick "scripts/volume.sh --vol-tog"
+      (image :class "vol-icon" :path VOL_ICON))
+    (box :class "slider-cont" :orientation "h" :space-evenly false
+      (scale :class "slider vol-slider" :max 100 :min 0 :value VOL_AMT :round-digits 0
+             :onchange "scripts/volume.sh --vol-set {}"))))
+
+;; Microphone
+(defwidget microphone-wg []
+  (box :class "bg-wdg" :orientation "h" :space-evenly false :spacing 4
+    (button :class "bg-wdg control-button"
+      :onclick "scripts/volume.sh --mic-tog"
+      (image :class "mic-icon" :path MIC_ICON))
+    (box :class "slider-cont" :orientation "h" :space-evenly false
+      (scale :class "slider mic-slider" :max 100 :min 0 :value MIC_AMT :round-digits 0
+             :onchange "scripts/volume.sh --mic-set {}"))))
+
+;; Brightness
+(defwidget brightness-wg []
+  (box :class "bg-wdg" :orientation "h" :space-evenly false :spacing 4
+    (button :class "bg-wdg control-button"
+      :onclick "xbacklight -set 10%"
+      (image :class "bright-icon" :path "images/icons/brightness.png"))
+    (box :class "slider-cont" :orientation "h" :space-evenly false
+      (scale :class "slider bright-slider" :max 100 :min 0 :value BRIGHT_AMT :round-digits 0
+             :onchange "xbacklight -set {}%"))))
+
+;; Control Box
+(defwidget control-box-wg []
+  (box :class "control-box" :orientation "v" :spacing 4
+    (volume-wg) (microphone-wg) (brightness-wg)))
+
+
+;;;;; Power Menu ;;;;;
+
+;; Poweroff
+(defwidget power-wg []
+  (button :class "bg-wdg power-button"
+    :onclick "poweroff"
+    (image :class "power-icon" :path "images/icons/power2.png")))
+
+;; Reboot
+(defwidget reboot-wg []
+  (button :class "bg-wdg power-button"
+    :onclick "reboot"
+    (image :class "reboot-icon" :path "images/icons/reboot2.png")))
+
+;; Suspend
+(defwidget suspend-wg []
+  (button :class "bg-wdg power-button"
+    :onclick "scripts/suspend.sh"
+    (image :class "suspend-icon" :path "images/icons/suspend2.png")))
+
+;; Logout
+(defwidget logout-wg []
+  (button :class "bg-wdg power-button"
+    :onclick "loginctl terminate-session $XDG_SESSION_ID"
+    (image :class "logout-icon" :exand true :path "images/icons/logout2.png")))
+
+;; Power Bar
+(defwidget power-bar-wg []
+  (box :orientation "h" :class "dash-cnt" :spacing 16
+    (logout-wg) (suspend-wg) (reboot-wg)  (power-wg)))
+
+
+;; Dashboards, Bars, Etc. ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defwidget control-center []
+  (eventbox
+    :onclick "eww close cc-win background"
+    (box :class "dash-bg" :orientation "v" :space-evenly false :spacing 20
+      (box :class "dash-cnt" (user-wg))
+      (box :class "dash-cnt" (clock-wg))
+      (box :class "dash-cnt" (power-bar-wg)))))
+
+(defwidget bg-wg []
+  (eventbox
+    :onclick "eww close background cc-win"
+    (image :class "background" :path "images/ramen-light-blur.png"
+           :width "100%" :height "100%")))
+
+;; Windows ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Control Center ;;
+(defwindow cc-win
+  :stacking "fg" :focusable false :monitor 0
+  :geometry (geometry :x "34%" :y "18%")
+  (control-center))
+
+;; Lock Screen ;;
+(defwindow background
+  :stacking "bg" :focusable "false" :monitor 0
+  :geometry (geometry :x "0%" :y "0%" :width "100%" :height "100%")
+  (bg-wg))
+
+
+;; Dropdown window decoration ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; This is a mess and not separated into nice reusable widgets. All windows have
+;; to be opened at once with open-many. They are aranged around the anticipated
+;; dropdown window as if they overlap it they prevent interaction with the window
+;; which is not ideal. There are two bars to go above and below the window to
+;; make it look like the whole thing is one. Also, especially the first time,
+;; startup times for the widgets and the dropdown can differ resulting in things
+;; appearing awkwardly. And I did not setup a way to toggle the widgets so it
+;; requires a keybind to open the dropdown and the widgets at the same time and
+;; then a keybind to close all of them.
+
+;; This is for a separate wrapper for a special dropdown for nmtui to pick
+;; wifi networks. It is not pictured in the screenshots and has a different
+;; geometry than other dropdown windows.
+(defwindow wifi-bg
+  :stacking "bg" :focusable "false" :monitor 0
+  :geometry (geometry :x "25%" :y "-2%" :width "691px" :height "70%")
+  (box :class "wifi-bg"
+    (box :class "wifi-status-bg" :valign "end"
+      (box :class "wifi-status" :valign "end" :halign "center"
+        :space-evenly false :spacing 20
+        (image :path {WIFI == ""
+                      ? "images/icons/wifi-down.png"
+                      : "images/icons/wifi-up.png"}
+               :halign "start")
+        (label :text {WIFI == "" ? "<Down>" : WIFI}
+               :halign "end" :yalign 0.5
+               :class "wifi-name")))))
+
+
+;; Dropdown terminals
+
+;; widget for the ramen bowls in the dropdown that show what workspace is active
+;; and allow clicking to change workspaces. The click just send the keybind for
+;; the qtile wm to pick up and act accordingly. I could not get it to work in
+;; qtile as expected so it was easier to do with a simulated keypress.
+(defwidget workspace-icon [tag]
+  (button :class "ws-icon"
+          :onclick "xdotool key super+${tag}"
+    (image :path {WS_CURRENT == tag
+                  ? "images/icons/ws-selected.png"
+                  : "images/icons/ws-unselected.png"})))
+
+(defwindow dropdown-left
+  :stacking "bg" :focusable "false" :monitor 0
+  :geometry (geometry :x "0%" :y "0%" :height "360px")
+      (box :class "dd-status-bg" :orientation "v"
+           :space-evenly false :spacing 16
+        (box :class "dd-system-status" :orientation "v" :space-evenly false
+          :spacing -16
+          (box (memory-wg) (cpu-wg))
+          (box (hdd-wg) (battery-wg)))
+        ;; Workspace switcher
+        (box :class "dd-bg" :orientation "h"
+          (workspace-icon :tag "a")
+          (workspace-icon :tag "s")
+          (workspace-icon :tag "d")
+          (workspace-icon :tag "f"))))
+
+(defwindow dropdown-right
+  :stacking "bg" :focusable "false" :monitor 0
+  :geometry (geometry :x "1094px" :y "0%" :height "360px")
+      (box :class "dd-status-bg" :orientation "v"
+           :space-evenly false :spacing 16
+        (box :class "dd-system-status" :space-evenly false
+             :style "padding: 2px 8px;" :spacing 12
+          (image :path {WIFI == ""
+                        ? "images/icons/wifi-down.png"
+                        : "images/icons/wifi-up.png"})
+          (label :class "text dd-wifi-name"
+                 :text {WIFI == "" ? "<Down>" : WIFI}))
+        (box :class "dd-system-status"
+          (control-box-wg))
+        (box :class "dd-text-container" :orientation "v" :space-evenly false :spacing 8
+          (label :class "text dd-date" :text DAY :halign "start")
+		      (label :class "text dd-time" :text "${HOUR}:${MIN} ${MER}" :halign "center")
+		      (label :class "text dd-date" :text "${MONTH} ${DAY_NUM}" :halign "end"))))
+
+(defwindow dropdown-top
+  :stacking "bg" :focusable "false" :monitor 0
+  :geometry (geometry :x "272px" :y "0%")
+  (box :class "dd-center-fill"))
+
+(defwindow dropdown-bottom
+  :stacking "bg" :focusable "false" :monitor 0
+  :geometry (geometry :x "272px" :y "361px")
+  (box :class "dd-center-fill"))
+
+
+;; This is a simple notifier that can flash on the screen when switching workspaces.
+;; It is not perfect and because it reuses the above widgets if the mouse is over
+;; it the hover bg will appear around elements, which is a bit sloppy.
+(defwindow ws-switch-notifier
+  :stacking "bg" :focusable "false" :monitor 0
+  :geometry (geometry :x "40%" :y "50%" :width "20%")
+  (box :class "ws-notify-bg"
+    (workspace-icon :tag "a")
+    (workspace-icon :tag "s")
+    (workspace-icon :tag "d")
+    (workspace-icon :tag "f")))
