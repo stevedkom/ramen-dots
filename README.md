@@ -1,12 +1,13 @@
 # A Nice Bowl of Ramen dots
 
-Some dots for my "A Bowl of Ramen" r/unixporn [post](https://www.reddit.com/r/unixporn/comments/y2ehbi/qtile_a_bowl_of_ramen/).
+Some dots for my "A Bowl of Ramen" r/unixporn [post](https://www.reddit.com/r/unixporn/comments/y2ehbi/qtile_a_bowl_of_ramen/). This is not all of my dots,
+but a selection of those that are relevant to the screenshot.
 
 ![](unixporn.png)
 
 **Note**: This is not a full collection of all the dots required for the desktop. It is NOT intedended to serve as something you can clone and
 get my exact desktop, but a collection of information that can allow people to see how I set things up. **These are given as is and I do not accept
-any responsibility for issues arising from their use**. Please DO NOT submit issues for the dots. If you have questions add a comment to the unixporn post.
+any responsibility for issues arising from their use**. Please DO NOT submit issues for the dots.
 
 ## Background and Icons
 
