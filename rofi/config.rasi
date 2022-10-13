@@ -3,6 +3,8 @@
  * Maintainer: joekamprad <joekamprad@endeavouros.com>
  *
  * Modified by stevedkom
+ * This is for a combi modi to switch windows, run commands, or open apps when necessary and
+ * is not pictured in the screenshots. There is no script to open it, just a qtile keybind
  *******************************************************/
 
 configuration {
